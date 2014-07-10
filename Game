@@ -1,0 +1,283 @@
+import java.awt.Color;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
+/* For this class I chose to extend frame instead of applet for the ease of use,
+ * and we implemented window listener, alarm listener and mouse listener. The alarm
+ * listener ensures that the alarm is functional, the mouse listener allows for user
+ * input in the form of buttons, and the window listener allows us to interact with the 
+ * frame.
+ * We have some of our variables defined here, such as how the Game window is presented
+ * to the user, we set a delay, our boundaries for where the bouncing ball walls are,
+ * we instantiate new Balls
+ * and create our new collection naming it ballsDeep, allowing us to work with the
+ * collection ballArray, without requiring us to interact with it directly.
+ * 
+ */
+public class Game extends Frame implements WindowListener,
+AlarmListener,
+MouseListener
+{
+
+
+	final int WINDOW_WIDTH = 600;
+	final int WINDOW_HEIGHT = 800;
+	private boolean running;
+	private final int DELAY = 100;
+	private int delay = DELAY;
+	public final static int LEFT_BORDER = 100;
+	public final static int RIGHT_BORDER = 400;
+	public final static int BOTTOM_BORDER = 400;
+	public final static int TOP_BORDER = 50;
+	private Ball ball = new Ball();
+	private Collection ballsDeep = new Collection();
+	public int addedBall;
+
+	/* This is our Constructor. The first thing is does is to set running to true, 
+	 * telling us that our program is active and running, which allows the move methods
+	 * to work properly. It creates the actual window the user sees, along with instantiating
+	 * a new alarm to be used. It activates the mouse listener and sets all of it visible 
+	 * so the user can see it.
+	 * 
+	 */
+	public Game(){	
+		running = true;
+		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+		setBackground(Color.lightGray);
+		setVisible(true);
+		Alarm alarm = new Alarm("beep", this);
+		alarm.setPeriod(DELAY);
+		alarm.start();
+		addMouseListener(this);
+
+
+
+	}
+
+
+	/*These are the Window event buttons which can be used to interact with the frame. They
+	 * do very little, but are necessary for the functioning of the program.
+	 */
+
+	public void windowActivated(WindowEvent e) {
+
+
+	}
+	@Override
+	public void windowClosed(WindowEvent e) {
+
+
+	}
+	@Override
+	public void windowClosing(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+	@Override
+	public void windowIconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+	/* This can be considered our "main" paint method almost. It creates the ball box
+	 * paints all the buttons, and calls ballsDeep.paint(pane) which activates the 
+	 * paint method in the Collection class, further activating the paint method
+	 * in the Ball class.
+	 * 
+	 */
+	public void paint(Graphics pane){
+		pane.setColor(Color.black);
+		pane.drawLine(LEFT_BORDER,TOP_BORDER,LEFT_BORDER,BOTTOM_BORDER);
+		pane.drawLine(RIGHT_BORDER,TOP_BORDER,RIGHT_BORDER,BOTTOM_BORDER);
+		pane.drawLine(LEFT_BORDER,BOTTOM_BORDER,RIGHT_BORDER, BOTTOM_BORDER);
+		reset.paint(pane);
+		slower.paint(pane);
+		faster.paint(pane);
+		throwed.paint(pane);
+		remove.paint(pane);
+		ballsDeep.paint(pane);
+
+
+	}
+	/* While the Button class sets up what a basic button looks like, here we create
+	 * instances of Button, which are labeled individually, given their own color, 
+	 * and placed at a certain area on the screen.
+	 * 
+	 */
+	Button reset = new Button("Reset", Color.yellow,100,450);
+	Button slower = new Button("Slower", Color.pink, 200,450);
+	Button faster = new Button("Faster",Color.green,300, 450);
+	Button throwed = new Button("Throw", Color.orange,400, 450);
+	Button remove = new Button("Remove",Color.cyan,500,450);
+
+	/* This creates a new alarm for the instance of the collection we are working with
+	 * in this case is ballsDeep.
+	 * 
+	 */
+	Alarm alarm = new Alarm("beep", this);
+	public void setBalls(){
+		this.ballsDeep = ballsDeep;
+	}
+
+	/*Take notice is a really important method, which allows us to have movement. In our
+	 * constructor running was set to true, and because of that, now that running is true
+	 * this method will activate ball.move and ballsDeep.move, allowing the balls in the 
+	 * collection to move, using the statements in the "move" method. of our ball class.
+	 */
+	public void takeNotice() {
+		if(running){
+			ball.move();
+			ballsDeep.move();
+		}
+		repaint();	// repaints to update for movement
+	}
+	/*This is our MouseListener. Mouse clicked serves to register the x and y values of 
+	 * the users click, and determines if each one of them are in the in a defined button
+	 * area. Mouse clicked deals with all the functionality. ("throwed" allows us to throw a
+	 * new ball into the box, remove activates the remove functionality in the collection class
+	 * reset will call the reset function in collection and delete all the balls.
+	 * slower and faster will call their functions in Collection (which calls methods in Ball class)
+	 * which will slow down or speed up the balls in the pen by changing their velocity.
+	 * 
+	 * Mouse Entered and Exit have nothing associated with them and are included for the sole
+	 * purpose of having a complete set of MouseEvents, which is necessary to use them. (to use
+	 * one you must have them all)
+	 * 
+	 * Mouse Pressed and Released are basically the same method, but opposite. They register
+	 * when a user has clicked the button, and has stopped clicking the button, and based 
+	 * on that feedback will flip the button so that it changes color, and looks like a real
+	 * button being pressed. It has little functionality, as all the functionality of what the
+	 * buttons do is handled by mouseClicked as opposed to mousePressed.
+	 */
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		int x = arg0.getX();
+		int y = arg0.getY();
+
+		if (throwed.isInside(x,y)){
+			ballsDeep.add(new Ball());
+			addedBall++;
+		}
+		else if(remove.isInside(x, y)&& addedBall >0){
+			ballsDeep.remove();
+			repaint();
+		}
+		else if(reset.isInside(x, y)){
+			ballsDeep.reset();
+			repaint();
+		}
+		else if(slower.isInside(x,y)){
+			ball.decreaseSpeed();
+			ballsDeep.decreaseSpeed();
+			repaint();
+		}
+		else if(faster.isInside(x,y)){
+			ball.increaseSpeed();
+			ballsDeep.increaseSpeed();
+			repaint();
+		}
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		int x = arg0.getX();
+		int y = arg0.getY();
+		if (remove.isInside(x, y)) {
+			remove.flip();
+			repaint();
+
+		}
+		if (reset.isInside(x, y)) {
+			reset.flip();
+			repaint();
+
+		}
+		if (faster.isInside(x, y)) {
+			faster.flip();
+			repaint();
+
+		}
+		if (throwed.isInside(x, y)) {
+			throwed.flip();
+			repaint();
+
+		}
+		if (slower.isInside(x, y)) {
+			slower.flip();
+			repaint();
+
+		}
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		int x = arg0.getX();
+		int y = arg0.getY();
+		if (remove.isInside(x, y)) {
+			remove.flip();
+			repaint();
+
+		}
+		if (reset.isInside(x, y)) {
+			reset.flip();
+			repaint();
+
+		}
+		if (faster.isInside(x, y)) {
+			faster.flip();
+			repaint();
+
+		}
+		if (throwed.isInside(x, y)) {
+			throwed.flip();
+			repaint();
+
+		}
+		if (slower.isInside(x, y)) {
+			slower.flip();
+			repaint();
+
+		}
+
+	}
+
+	@Override
+	public void mousePressed() {
+		// TODO Auto-generated method stub
+
+	} 
+}
