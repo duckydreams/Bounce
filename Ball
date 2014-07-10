@@ -1,0 +1,127 @@
+import java.awt.Color;
+import java.awt.Graphics;
+
+/*
+ * This is our public class ball, and directly below it
+ * our constructor. Here we set up the variables necessary 
+ * for the class to work. Color, Size (diameter) x,y, and gravity
+ * velocity, and a bounce factor are all defined here.
+ * 
+ * In the constructor x,y and color are given random variables chosen
+ * using math.randm. This ensures that every ball spawned by our program
+ * will not only be spawned in a random location within our box
+ * but it will also be given a random RGB value for a color.
+ */
+public class Ball {
+	int x,y;
+	final int SIZE = 20;
+	Color color;
+	private final int gravity = 5;
+	int velocityY = 35;
+	int velocityX = 30;
+	double BounceFactor = .95;
+
+
+	public Ball(){
+		x= (int)(1+Math.random()*300)+ 100;
+		y =(int)(1+Math.random()*300)+ 100;
+		color = new Color((int)(Math.random() * 255) + 1, 
+				(int)(Math.random() * 255) + 1, (int)(Math.random() * 255) + 1);
+
+	}
+	/*
+public Ball(int x,int y){
+	this.x = x;
+	this.y = y;
+	color = Color.pink;
+
+}
+	 */
+	/*This is our paint method, however this paint method only serves to be called 
+	 * by another paint method later in the program. It will be called upon to do the 
+	 * actual painting of the ball on the screen given a certain color and a certain
+	 * location at any given time.
+	 * 
+	 */
+	public void paint(Graphics pane){
+		pane.setColor(color);
+		pane.fillOval(x,y, SIZE, SIZE);
+		pane.setColor(Color.black); //border
+		pane.drawOval(x,y, SIZE+1,SIZE+1);
+
+
+	}
+	/*This is our increase speed function, it functions with our increaseSpeed class in our
+	 * collection, as well as the button it corresponds to in the games class. When prompted it
+	 * will add 10 to the X and Y velocities to make them faster. Faster velocities means the
+	 * balls travel faster.
+	 * 
+	 */
+
+	public void increaseSpeed()
+	{
+		if(velocityX > 0){
+			velocityX = velocityX +10;
+			velocityY = velocityY +10;
+		}
+		else{
+			velocityX = velocityX- 5;
+			velocityY = velocityY - 5;
+		}
+
+	}
+	/*This is our decrease speed function, it functions with our decreaseSpeed class in our
+	 * collection, as well as the button it corresponds to in the games class. When prompted it
+	 * will subtract 10 to the X and Y velocities to make them slower. Slower velocities means the
+	 * balls travel faster.
+	 * This class was particularly difficult, as subtracting values made the velocities faster.
+	 * While the solution described below is functional, it is not perfect.
+	 */
+	public void decreaseSpeed()
+	{
+		if(velocityX > 0){
+			velocityX =  velocityX - 10;
+			velocityY = velocityY + 10;
+		}
+		else{
+			velocityX = velocityX + 5;
+			velocityY = velocityY + 5;
+		}
+	}
+	/*The move function is where all the forces of gravity come into play. It defines how
+	 * the ball moves on screen. The first two if statements deal with x, and ensuring
+	 * that the left and right borders are never crossed by the ball. If they are, the program
+	 * will simply put the ball back on the border line. Note that Right border subtracts
+	 * size, to avoid the ball being half way outside of the boundaries. The final statements
+	 * deal with y, and the effects of gravity as well as ensuring that when the ball bounces
+	 * that it doesn't pass the bottom boundary of the ball box.
+	 * 	
+	 */
+	public void move(){
+		x = x + velocityX;
+
+		if (x < Game.LEFT_BORDER){
+			x = Game.LEFT_BORDER;
+			velocityX = -velocityX;
+
+		}
+		else if (x > Game.RIGHT_BORDER- SIZE){
+			x = Game.RIGHT_BORDER- SIZE;
+			velocityX = -velocityX;
+
+		}
+
+		y = y + velocityY;
+
+		if( y > Game.BOTTOM_BORDER- SIZE){
+			y = Game.BOTTOM_BORDER- SIZE;
+			velocityY = (int) (-velocityY*(.90));
+
+		}
+
+		velocityY += gravity;
+
+
+
+	}
+}
