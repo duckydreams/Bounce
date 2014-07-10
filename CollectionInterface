@@ -1,0 +1,13 @@
+/*This is our collection Interface, which works with our collection class
+ * It adds basic but important functionality and passes it to the collection
+ * It enables the use of add, remove and isEmpty, which we use in collection and 
+ * which come in handy extensively in the games class.
+ * Being an interface, it only passes the methods else where, and none of the actual
+ * work is done here.
+ * 
+ */
+public interface CollectionInterface {
+	public boolean isEmpty();
+	public void add();
+	public void remove();
+}
