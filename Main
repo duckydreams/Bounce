@@ -1,0 +1,15 @@
+/*
+ *  This is our main class, it's sole purpose it to call the games class, and
+ *  instantiate a new game, which begins the process of running the program.
+ *  All the set up methods and functionality are contained within other classes, with a lot
+ *  the functionality being handled by the Games class, but the main is important because
+ *  the Games class needs to be called and put into action in order to function.
+ *  
+ * 
+ */
+public class Main {
+	public static void main(String []args){
+		Game game = new Game();
+	}
+}
+
