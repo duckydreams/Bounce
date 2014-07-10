@@ -1,0 +1,111 @@
+import java.awt.Graphics;
+
+/*The collection class serves serves to hold a collection of balls in an array
+ * It creates the array ballArray, and implements Collection Interface which
+ * serves to add basic functionality and some methods. Our array is set to hold 1,000
+ * spaces to avoid an overflow. 
+ * 
+ */
+
+public class Collection implements CollectionInterface {
+	Ball[] ballArray;
+	public int  numBalls;
+	public Collection(){
+		ballArray =new Ball[1000];
+
+	}
+	/* This class is a boolean expression. It only checks to see if we have
+	 * any objects in our array.
+	 */
+	public boolean isEmpty() {
+		if (ballArray[0] == null)
+			return true;
+		else
+			return false;
+
+	}
+	/* Since the user can add and remove balls at their wish, we have an add ball feature
+	 * which creates a new instantiation of Ball, at location numBalls, then increments 
+	 * numBalls to prepare for the addition of another ball to the array.
+	 * 
+	 */
+	public void add(Ball ball) {
+		ballArray[numBalls] = new Ball();
+		numBalls++;
+
+	}
+	/* This is our paint method for the Collection class. Like the ball class paint method
+	 * it only calls and is called by other paint method. This one calls the Ball paint method
+	 * in order to paint the balls in the array. It will be called in the Games class
+	 * when painting the entire game board.
+	 * 
+	 */
+	public void paint(Graphics pane){
+		for(int i = 0; i < numBalls; i++)
+		{
+			ballArray[i].paint(pane);
+		}
+	}
+	/*It was mentioned before that users were given the functionality to add and remove
+	 * balls from the array if they choose. To remove, the location at numballs is
+	 * set to null, and numBalls is decremented, so there is one less spot in the 
+	 * array. This works backwards until the user stops or untill no more balls 
+	 * remain. 
+	 */
+	public void remove() {
+		ballArray[numBalls] = null;
+		numBalls--;
+	}
+	/* This simply activates the move method in the balls class; It tells it for
+	 * all the balls in the array, to activate the move method, allowing them to
+	 * be acted on by the forces of physics we programmed in.
+	 * 
+	 */
+	public void move() {
+		for(int i = 0; i < numBalls; i++){
+			ballArray[i].move();
+		}
+
+
+		/*For this method, you simply reset numBalls to 0, when numBalls is 0 all the rest
+		 * of the methods stop, because they all check that numBalls is greater than 0
+		 * (ie. there is a ball). You cannot simply say ballArray = null, as that leads
+		 * to a null pointer exception.
+		 * 
+		 */
+	}
+	public void reset(){
+		numBalls = 0;
+	}
+	/*
+	 * We have our add function up there, but Eclipse keeps trying to add this here.
+	 * It has absolutely no functionality at all, and is only here for the benefit of 
+	 * preventing red marks in Eclipse.
+	 */
+	public void add() {
+		// TODO Auto-generated method stub
+
+	}
+	/*Calls the increaseSpeed method in the Ball class, if there are balls in the array
+	 * and the user has clicked on the "faster" button.
+	 * 
+	 */
+	public void increaseSpeed()
+	{
+		for(int i = 0; i < numBalls; i++)
+		{
+			ballArray[i].increaseSpeed();
+		}
+	}
+	/*Calls the decreaseSpeed method in the Ball class, if there are balls in the array
+	 * and the user has clicked on the "slower" button.
+	 * 
+	 */
+	public void decreaseSpeed()
+	{
+		for(int i = 0; i < numBalls; i++)
+		{
+			ballArray[i].decreaseSpeed();
+		}
+	}
+}
